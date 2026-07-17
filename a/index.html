@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home</title>
+  <meta name="description" content="A personal test page.">
+  <meta name="robots" content="index,follow">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav" aria-label="主导航 / Main navigation">
+      <a class="brand" href="../">PetrichorSync</a>
+      <div class="nav-inner">
+        <div class="lang-switch" role="group" aria-label="Language / 语言">
+          <button type="button" data-setlang="zh" aria-pressed="true">中</button>
+          <button type="button" data-setlang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <p class="variant-banner"><span class="zh">元数据 A/B 测试 · 变体 A（未优化元数据）</span><span class="en">Metadata A/B test · Variant A (unoptimized metadata)</span></p>
+
+    <div class="hero">
+      <div class="hero-main">
+        <p class="eyebrow"><span class="zh">独立测试记录</span><span class="en">Independent test note</span></p>
+        <h1><span class="zh">PetrichorSync：低成本电容式土壤湿度传感器漂移校准协议</span><span class="en">PetrichorSync: A Drift-Calibration Protocol for Low-Cost Capacitive Soil-Moisture Sensors</span></h1>
+        <p class="hero-subtitle"><span class="zh">一套面向精准农业场景、针对电容式土壤湿度传感器温度与老化漂移的周期性微校准方案，强调低成本硬件下的长期读数稳定性。</span><span class="en">A periodic micro-calibration scheme for temperature- and aging-related drift in capacitive soil-moisture sensors used in precision agriculture, aimed at long-term reading stability on low-cost hardware.</span></p>
+        <p class="disclaimer"><span class="zh">独立测试记录，非正式发表成果。</span><span class="en">Independent test note, not a formal publication.</span></p>
+      </div>
+      <aside class="summary-card">
+        <h2><span class="zh">概览</span><span class="en">At a glance</span></h2>
+        <dl>
+          <div><dt><span class="zh">测试规模</span><span class="en">Test set</span></dt><dd>240 <span class="zh">支传感器</span><span class="en">sensors</span></dd></div>
+          <div><dt><span class="zh">测试周期</span><span class="en">Trial length</span></dt><dd>7 <span class="zh">天</span><span class="en">days</span></dd></div>
+          <div><dt><span class="zh">校准间隔</span><span class="en">Calibration interval</span></dt><dd>6 <span class="zh">小时</span><span class="en">hours</span></dd></div>
+          <div><dt><span class="zh">记录更新</span><span class="en">Updated</span></dt><dd>2026-07-17</dd></div>
+        </dl>
+      </aside>
+    </div>
+
+    <section class="section">
+      <p class="section-label"><span class="zh">01 · 背景与问题</span><span class="en">01 · Background &amp; problem</span></p>
+      <h2><span class="zh">电容式土壤湿度传感器为什么会漂移</span><span class="en">Why capacitive soil-moisture sensors drift</span></h2>
+      <p><span class="zh">低成本电容式土壤湿度传感器的读数会随温度变化、土壤盐分波动和电极老化而系统性偏移。多数低价模块不带温度补偿电路，长期部署后读数会逐渐偏离真实含水量，且偏移方向和幅度因批次而异，难以用固定偏移量一次性修正。</span><span class="en">Readings from low-cost capacitive soil-moisture sensors drift systematically with temperature swings, soil-salinity changes, and electrode aging. Most inexpensive modules have no temperature-compensation circuit; after long deployment, readings gradually diverge from true moisture content, and the direction and magnitude of drift vary by batch, so a single fixed offset cannot correct it.</span></p>
+    </section>
+
+    <section class="section">
+      <p class="section-label"><span class="zh">02 · PetrichorSync 协议要点</span><span class="en">02 · PetrichorSync protocol overview</span></p>
+      <h2><span class="zh">配对参考传感器与微校准脉冲</span><span class="en">Paired reference sensor and micro-calibration pulses</span></h2>
+      <div class="cards cards-two">
+        <article class="card">
+          <h3><span class="zh">配对参考传感器</span><span class="en">Paired reference sensor</span></h3>
+          <p><span class="zh">每组部署传感器配一支密封参考探头，读数不受土壤盐分影响，用于估计漂移基线。</span><span class="en">Each deployed group pairs with a sealed reference probe unaffected by soil salinity, used to estimate the drift baseline.</span></p>
+        </article>
+        <article class="card">
+          <h3><span class="zh">周期性微校准脉冲</span><span class="en">Periodic micro-calibration pulse</span></h3>
+          <p><span class="zh">每 6 小时施加一次低幅度激励脉冲，比较响应曲线与出厂基线的偏差，估算当前漂移量。</span><span class="en">A low-amplitude excitation pulse is applied every 6 hours; comparing the response curve against the factory baseline estimates the current drift.</span></p>
+        </article>
+        <article class="card">
+          <h3><span class="zh">分段线性补偿</span><span class="en">Piecewise-linear compensation</span></h3>
+          <p><span class="zh">按温度区间分段拟合补偿曲线，避免单一线性模型在极端温度下失效。</span><span class="en">Compensation curves are fitted per temperature band, avoiding failure of a single linear model at extreme temperatures.</span></p>
+        </article>
+        <article class="card">
+          <h3><span class="zh">置信度标记</span><span class="en">Confidence flagging</span></h3>
+          <p><span class="zh">当校准脉冲响应异常或参考探头读数不稳定时，该次补偿标记为低置信度并回退到保守估计。</span><span class="en">When the pulse response is abnormal or the reference probe is unstable, that compensation is flagged low-confidence and falls back to a conservative estimate.</span></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="section-label"><span class="zh">03 · 校准流程</span><span class="en">03 · Calibration procedure</span></p>
+      <h2><span class="zh">从部署到持续补偿</span><span class="en">From deployment to ongoing compensation</span></h2>
+      <ol class="steps">
+        <li><span class="zh">部署时记录出厂响应曲线与参考探头基线；</span><span class="en">record the factory response curve and reference-probe baseline at deployment;</span></li>
+        <li><span class="zh">每 6 小时触发一次微校准脉冲并采集响应；</span><span class="en">trigger a micro-calibration pulse and collect the response every 6 hours;</span></li>
+        <li><span class="zh">按温度区间比对响应曲线，计算漂移估计值；</span><span class="en">compare response curves per temperature band to compute the drift estimate;</span></li>
+        <li><span class="zh">若参考探头或脉冲响应异常，标记本次估计为低置信度；</span><span class="en">flag the estimate low-confidence if the reference probe or pulse response is abnormal;</span></li>
+        <li><span class="zh">将补偿值写入本地读数流水线，累计记录用于后续复检。</span><span class="en">write the compensation value into the local reading pipeline and log it for later review.</span></li>
+      </ol>
+    </section>
+
+    <section class="section">
+      <p class="section-label"><span class="zh">04 · 初步测试结果</span><span class="en">04 · Preliminary results</span></p>
+      <h2><span class="zh">7 天对比测试</span><span class="en">7-day comparison trial</span></h2>
+      <p><span class="zh">在 240 支传感器、为期 7 天的田间对比测试中，未校准组的漂移误差为 ±4.2%，应用 PetrichorSync 微校准后降至 ±0.6%。测试覆盖 3 种土壤类型和昼夜温差约 18°C 的环境，结果为初步观测，尚未经过独立复现。</span><span class="en">In a 7-day field trial with 240 sensors, the uncalibrated group showed ±4.2% drift error; applying PetrichorSync micro-calibration reduced it to ±0.6%. The trial covered 3 soil types and a diurnal temperature swing of about 18°C. These are preliminary observations, not yet independently reproduced.</span></p>
+    </section>
+
+    <section class="section">
+      <p class="section-label"><span class="zh">05 · 常见问题</span><span class="en">05 · FAQ</span></p>
+      <h2><span class="zh">FAQ</span><span class="en">FAQ</span></h2>
+      <div class="faq-list">
+        <article>
+          <h2><span class="zh">PetrichorSync 需要额外硬件吗？</span><span class="en">Does PetrichorSync need extra hardware?</span></h2>
+          <p><span class="zh">需要一支密封参考探头和可编程激励脉冲的驱动电路，多数低成本模块可通过固件升级支持。</span><span class="en">It needs a sealed reference probe and a driver circuit capable of a programmable excitation pulse; most low-cost modules can support this via a firmware update.</span></p>
+        </article>
+        <article>
+          <h2><span class="zh">校准间隔可以调整吗？</span><span class="en">Can the calibration interval be changed?</span></h2>
+          <p><span class="zh">可以，6 小时是本次测试使用的默认值，更短间隔会提高精度但增加功耗。</span><span class="en">Yes — 6 hours was the default used in this trial; a shorter interval improves accuracy but increases power draw.</span></p>
+        </article>
+        <article>
+          <h2><span class="zh">这个结果适用于所有传感器型号吗？</span><span class="en">Does this result generalize to all sensor models?</span></h2>
+          <p><span class="zh">目前仅在测试所用的批次上验证，跨型号和跨厂商的效果尚未测试。</span><span class="en">It has only been verified on the batch used in this trial; cross-model and cross-vendor performance has not been tested.</span></p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>PetrichorSync Test Note · <span class="zh">更新于</span><span class="en">Updated</span> 2026-07-17</span>
+    <span><a href="../"><span class="zh">返回首页</span><span class="en">Home</span></a></span>
+  </footer>
+
+  <script src="../assets/lang.js"></script>
+</body>
+</html>

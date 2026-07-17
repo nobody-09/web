@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>元数据 A/B 测试 | Metadata A/B Test</title>
+  <meta name="robots" content="noindex,follow">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav" aria-label="主导航 / Main navigation">
+      <a class="brand" href="./">Metadata A/B Test</a>
+      <div class="nav-inner">
+        <div class="lang-switch" role="group" aria-label="Language / 语言">
+          <button type="button" data-setlang="zh" aria-pressed="true">中</button>
+          <button type="button" data-setlang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <p class="section-label"><span class="zh">研究实验</span><span class="en">Research experiment</span></p>
+      <h1><span class="zh">元数据对收录、展示与 AI 引用的影响：A/B 测试</span><span class="en">Effect of Metadata on Indexing, SERP Display, and AI Citation: an A/B Test</span></h1>
+      <p class="page-lead"><span class="zh">两个页面的可见正文完全相同，仅 &lt;head&gt; 中的 meta 标签质量与 JSON-LD 结构化数据不同，用于对比对搜索收录、搜索结果展示与 AI 搜索引用的影响。</span><span class="en">Both pages share identical visible content — only the quality of &lt;head&gt; meta tags and JSON-LD structured data differ, to compare their effect on search indexing, SERP display, and AI search citation.</span></p>
+    </div>
+
+    <section class="section">
+      <h2><span class="zh">两个变体</span><span class="en">The two variants</span></h2>
+      <div class="content-grid">
+        <article>
+          <h3><span class="zh">变体 A · 未优化</span><span class="en">Variant A · Unoptimized</span></h3>
+          <p><span class="zh">无 meta description、无 JSON-LD、无 Open Graph/canonical/hreflang。</span><span class="en">No meta description, no JSON-LD, no Open Graph / canonical / hreflang.</span></p>
+          <p><a href="a/"><span class="zh">访问变体 A →</span><span class="en">Visit Variant A →</span></a></p>
+        </article>
+        <article>
+          <h3><span class="zh">变体 B · 完整优化</span><span class="en">Variant B · Fully optimized</span></h3>
+          <p><span class="zh">精心撰写的 title/description、完整 JSON-LD（WebSite + TechArticle + FAQPage）、Open Graph/Twitter/canonical/hreflang 齐全。</span><span class="en">Carefully written title/description, full JSON-LD (WebSite + TechArticle + FAQPage), complete Open Graph / Twitter / canonical / hreflang.</span></p>
+          <p><a href="b/"><span class="zh">访问变体 B →</span><span class="en">Visit Variant B →</span></a></p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Metadata A/B Test · <span class="zh">更新于</span><span class="en">Updated</span> 2026-07-17</span>
+  </footer>
+
+  <script src="assets/lang.js"></script>
+</body>
+</html>
