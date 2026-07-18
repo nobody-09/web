@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nobody-09.github.io/web/sitemap.xml
+Sitemap: https://nobody-09.github.io/web/a/sitemap.xml
