@@ -63,13 +63,19 @@ src/
     data/products.json.ts       # machine-readable product data
     data/benchmarks.json.ts     # machine-readable benchmark data (incl.
                                  # resolved comparison values)
+    sitemap.xml.ts               # hand-rolled sitemap (see below)
 public/
   robots.txt                    # Allow: / plus Sitemap: line
 ```
 
-`@astrojs/sitemap` generates `sitemap-index.xml` automatically at build
-time from every static route, so new pages are included with no extra
-configuration.
+`src/pages/sitemap.xml.ts` generates `/sitemap.xml` at request/build
+time from the same content collections as everything else, so new
+products/benchmarks are included automatically. (`@astrojs/sitemap` was
+tried first but currently crashes during Astro's `astro:build:done`
+hook on this project — `Cannot read properties of undefined (reading
+'reduce')` — so it was replaced with this small custom route instead.
+If a future version of that package fixes the crash, it could replace
+this file, but there's no need to switch back.)
 
 ## Adding a new product
 
@@ -103,9 +109,9 @@ No page template needs to change.
    Markdown body of the file.
 3. That's it. The benchmark automatically appears on `/benchmarks/`,
    gets its own page at `/benchmarks/<slug>/`, shows up in
-   `/data/benchmarks.json`, is included in the sitemap, and appears in
-   the "Related benchmarks" list on every product page it references —
-   none of that is hand-wired per benchmark.
+   `/data/benchmarks.json`, is included in `/sitemap.xml`, and appears
+   in the "Related benchmarks" list on every product page it
+   references — none of that is hand-wired per benchmark.
 
 If a benchmark needs a metric that doesn't exist as a first-class field
 yet, add it to the relevant products' `attributes[]` lists rather than
