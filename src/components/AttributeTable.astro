@@ -9,20 +9,63 @@ interface Props {
 const { product } = Astro.props;
 const d = product.data;
 
-type Row = { label: string; value: string; unit?: string };
+type Row = { label: string; value: string; unit?: string; note?: string };
 
 const rows: Row[] = [];
 
 for (const { key, label } of CORE_ATTRIBUTE_ROWS) {
   const resolved = resolveAttributeValue(product, key);
   if (resolved) {
-    rows.push({ label, value: resolved.value, unit: resolved.unit });
+    rows.push({
+      label,
+      value: resolved.value,
+      unit: resolved.unit,
+      // Only ever set when the product explicitly declares a scope (see
+      // `standardTasksScope` in the schema) — undefined, and therefore
+      // invisible, for records that only report one number.
+      note: resolved.scope ? `统计范围:${resolved.scope}` : undefined,
+    });
   }
 }
 
 // Open-ended metrics added for later benchmark categories.
 for (const attr of d.attributes) {
   rows.push({ label: attr.name, value: attr.value, unit: attr.unit });
+}
+
+// Task-subset results are opt-in: only products that declare
+// `taskSubsets[]` (currently none in the first benchmark group) get these
+// extra rows, so existing product pages render exactly as before. Each
+// subset is shown as its own pair of rows (count, then rate) directly
+// below the overall count/rate, each carrying its own scope note, so an
+// overall result and a subset result can never be mistaken for each other.
+if (d.taskSubsets.length > 0) {
+  const overallRate = resolveAttributeValue(product, 'taskCompletionRate');
+  if (overallRate) {
+    rows.push({
+      label: '总体任务完成率',
+      value: overallRate.value,
+      note: overallRate.scope ? `统计范围:${overallRate.scope}` : undefined,
+    });
+  }
+  for (const subset of d.taskSubsets) {
+    const count = resolveAttributeValue(product, `taskSubset:${subset.id}`);
+    const rate = resolveAttributeValue(product, `taskSubsetRate:${subset.id}`);
+    if (count) {
+      rows.push({
+        label: `${subset.label}(完成数量)`,
+        value: count.value,
+        note: `统计范围:${subset.scope}`,
+      });
+    }
+    if (rate) {
+      rows.push({
+        label: `${subset.label}(完成率)`,
+        value: rate.value,
+        note: `统计范围:${subset.scope}`,
+      });
+    }
+  }
 }
 ---
 
@@ -37,7 +80,10 @@ for (const attr of d.attributes) {
     {rows.map((row) => (
       <tr>
         <th scope="row">{row.label}</th>
-        <td>{row.value}{row.unit ? ` ${row.unit}` : ''}</td>
+        <td>
+          {row.value}{row.unit ? ` ${row.unit}` : ''}
+          {row.note ? <div class="card-meta">{row.note}</div> : null}
+        </td>
       </tr>
     ))}
     <tr>

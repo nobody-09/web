@@ -22,6 +22,14 @@ export const GET: APIRoute = async () => {
     testedAt: p.data.testedAt.toISOString().slice(0, 10),
     lastReviewed: p.data.lastReviewed.toISOString().slice(0, 10),
     notes: p.data.notes ?? null,
+    // What `standardTasksCompleted`/`standardTasksTotal` above was
+    // measured over — null for records that only ever report one number
+    // and have no need to state a scope (e.g. the first benchmark group).
+    standardTasksScope: p.data.standardTasksScope ?? null,
+    // Predefined task subsets this product was also scored against, each
+    // carrying its own scope — never to be confused with the overall
+    // standardTasksCompleted/standardTasksTotal above.
+    taskSubsets: p.data.taskSubsets,
     attributes: p.data.attributes,
     summary: p.data.summary,
     url: withBase(`/products/${p.slug}/`),

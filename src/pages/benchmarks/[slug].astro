@@ -38,8 +38,24 @@ const path = `/benchmarks/${benchmark.slug}/`;
 
   <p>{benchmark.data.summary}</p>
 
-  <h2>对比产品</h2>
-  <ComparisonTable benchmark={benchmark} products={products} />
+  {benchmark.data.resultGroups && benchmark.data.resultGroups.length > 0 ? (
+    benchmark.data.resultGroups.map((group) => (
+      <section>
+        <h2>{group.heading}</h2>
+        {group.scopeNote ? <p class="card-meta">{group.scopeNote}</p> : null}
+        <ComparisonTable
+          benchmark={benchmark}
+          products={products}
+          measuredAttributes={group.measuredAttributes}
+        />
+      </section>
+    ))
+  ) : (
+    <>
+      <h2>对比产品</h2>
+      <ComparisonTable benchmark={benchmark} products={products} />
+    </>
+  )}
   {benchmark.data.methodologyNote ? <p class="card-meta">{benchmark.data.methodologyNote}</p> : null}
 
   <Content />

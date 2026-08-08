@@ -3,6 +3,26 @@ import type { CollectionEntry } from 'astro:content';
 export type ProductEntry = CollectionEntry<'products'>;
 export type BenchmarkEntry = CollectionEntry<'benchmarks'>;
 
+export interface ResolvedAttribute {
+  value: string;
+  unit?: string;
+  /** Present for fraction-based metrics (task counts), for machine-readable output. */
+  numerator?: number;
+  denominator?: number;
+  /** What exactly this value was measured over — required reading before
+   * comparing two numbers that use the same label but different scope
+   * (e.g. an overall result vs. a task-subset result). */
+  scope?: string;
+}
+
+/** Formats a completed/total pair as a percentage string with no decimal
+ * places unless the result isn't a whole number (e.g. "68" not "68.0",
+ * but "66.7" for a non-exact ratio). */
+function formatRate(completed: number, total: number): string {
+  const rate = Math.round((completed / total) * 1000) / 10;
+  return `${Number.isInteger(rate) ? rate : rate.toFixed(1)}%`;
+}
+
 /**
  * Resolves the display value for a given attribute `key` on a product.
  *
@@ -16,8 +36,13 @@ export type BenchmarkEntry = CollectionEntry<'benchmarks'>;
  * Resolution order for a given key:
  *   1. A handful of computed/composite keys (e.g. "taskCompletion",
  *      which combines standardTasksCompleted/standardTasksTotal).
- *   2. A first-class field on the product schema (e.g. "startupTimeSeconds").
- *   3. An entry in the product's open-ended `attributes[]` list, matched
+ *   2. Scoped task-subset keys, using the `taskSubset:<id>` /
+ *      `taskSubsetRate:<id>` convention — these only ever read from a
+ *      product's `taskSubsets[]` list, never from its overall
+ *      standardTasksCompleted/Total fields, so a subset result can never
+ *      be silently rendered as if it were the overall result.
+ *   3. A first-class field on the product schema (e.g. "startupTimeSeconds").
+ *   4. An entry in the product's open-ended `attributes[]` list, matched
  *      by name (case-insensitive). This is what lets future benchmarks
  *      compare metrics that don't exist yet without touching this file.
  *
@@ -27,8 +52,32 @@ export type BenchmarkEntry = CollectionEntry<'benchmarks'>;
 export function resolveAttributeValue(
   product: ProductEntry,
   key: string
-): { value: string; unit?: string } | null {
+): ResolvedAttribute | null {
   const data = product.data;
+
+  if (key.startsWith('taskSubsetRate:')) {
+    const id = key.slice('taskSubsetRate:'.length);
+    const subset = data.taskSubsets.find((s) => s.id === id);
+    if (!subset) return null;
+    return {
+      value: formatRate(subset.completed, subset.total),
+      numerator: subset.completed,
+      denominator: subset.total,
+      scope: subset.scope,
+    };
+  }
+
+  if (key.startsWith('taskSubset:')) {
+    const id = key.slice('taskSubset:'.length);
+    const subset = data.taskSubsets.find((s) => s.id === id);
+    if (!subset) return null;
+    return {
+      value: `${subset.completed} / ${subset.total}`,
+      numerator: subset.completed,
+      denominator: subset.total,
+      scope: subset.scope,
+    };
+  }
 
   switch (key) {
     case 'taskCompletion': {
@@ -40,6 +89,26 @@ export function resolveAttributeValue(
       }
       return {
         value: `${data.standardTasksCompleted} / ${data.standardTasksTotal}`,
+        numerator: data.standardTasksCompleted,
+        denominator: data.standardTasksTotal,
+        // Only set when the product explicitly declares it — left
+        // undefined for records (like the first benchmark group) that
+        // only ever report one number and have no need to state a scope.
+        scope: data.standardTasksScope,
+      };
+    }
+    case 'taskCompletionRate': {
+      if (
+        data.standardTasksCompleted === undefined ||
+        data.standardTasksTotal === undefined
+      ) {
+        return null;
+      }
+      return {
+        value: formatRate(data.standardTasksCompleted, data.standardTasksTotal),
+        numerator: data.standardTasksCompleted,
+        denominator: data.standardTasksTotal,
+        scope: data.standardTasksScope,
       };
     }
     case 'thirdPartyPluginSupport': {

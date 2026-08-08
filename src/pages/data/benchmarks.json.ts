@@ -17,18 +17,43 @@ export const GET: APIRoute = async () => {
         b.data.comparedProducts.map((ref) => getEntry(ref))
       );
 
-      const measuredValues = b.data.measuredAttributes.map((m) => ({
-        key: m.key,
-        label: m.label,
-        values: products.map((p) => {
-          const resolved = resolveAttributeValue(p, m.key);
-          return {
-            productSlug: p.slug,
-            value: resolved?.value ?? null,
-            unit: resolved?.unit ?? m.unit ?? null,
-          };
-        }),
-      }));
+      // Resolves one measuredAttributes[] list into its machine-readable
+      // form. `numerator`/`denominator`/`scope` come straight from
+      // resolveAttributeValue, so a subset value (e.g. 18/20, scoped to a
+      // "20-task subset") is never emitted without the scope that
+      // distinguishes it from an overall value (e.g. 68/100) — no
+      // consumer of this JSON can mix the two up by only reading a bare
+      // "value" or "successRate" number.
+      const resolveGroup = (measuredAttributes: typeof b.data.measuredAttributes) =>
+        measuredAttributes.map((m) => ({
+          key: m.key,
+          label: m.label,
+          values: products.map((p) => {
+            const resolved = resolveAttributeValue(p, m.key);
+            return {
+              productSlug: p.slug,
+              metric: m.label,
+              value: resolved?.value ?? null,
+              unit: resolved?.unit ?? m.unit ?? null,
+              numerator: resolved?.numerator ?? null,
+              denominator: resolved?.denominator ?? null,
+              scope: resolved?.scope ?? m.description ?? null,
+              benchmarkId: b.data.id,
+            };
+          }),
+        }));
+
+      const measuredValues = resolveGroup(b.data.measuredAttributes);
+
+      const resultGroups = b.data.resultGroups
+        ? b.data.resultGroups.map((group) => ({
+            id: group.id,
+            heading: group.heading,
+            scopeNote: group.scopeNote ?? null,
+            measuredAttributes: group.measuredAttributes,
+            measuredValues: resolveGroup(group.measuredAttributes),
+          }))
+        : null;
 
       return {
         id: b.data.id,
@@ -39,8 +64,13 @@ export const GET: APIRoute = async () => {
         lastReviewed: b.data.lastReviewed.toISOString().slice(0, 10),
         benchmarkVersion: b.data.benchmarkVersion,
         summary: b.data.summary,
+        // Flat table — populated for benchmarks that only compare one
+        // consistently-scoped set of measurements (null/empty otherwise).
         measuredAttributes: b.data.measuredAttributes,
         measuredValues,
+        // Multiple explicitly-scoped result sets (e.g. an overall result
+        // and a task subset) — null for benchmarks that don't need this.
+        resultGroups,
         url: withBase(`/benchmarks/${b.slug}/`),
       };
     })

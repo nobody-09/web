@@ -118,6 +118,42 @@ yet, add it to the relevant products' `attributes[]` lists rather than
 extending `src/content/config.ts` — the schema is intentionally generic
 so it doesn't need to grow with every new benchmark category.
 
+## Task subsets vs. overall results
+
+Some benchmarks (starting with the second benchmark group, Elvora S14 vs
+Marqen V28) need to report a result over the complete task set *and* a
+result over a predefined subset of that same task set, and must never
+let the two be mistaken for each other. Two schema features exist
+specifically for this and are both opt-in — a product/benchmark that
+doesn't use them behaves exactly as before:
+
+- **`taskSubsets[]`** on a product (`{ id, label, completed, total,
+  scope }`) records a result for a predefined subset, separately from
+  the product's own `standardTasksCompleted`/`standardTasksTotal`
+  (the overall result). Resolve a subset value with the
+  `taskSubset:<id>` (count) / `taskSubsetRate:<id>` (percentage) keys in
+  a benchmark's `measuredAttributes` — these only ever read from
+  `taskSubsets[]`, never from the overall fields, so a subset number
+  can't silently get labeled as an overall number. The optional
+  `standardTasksScope` field on a product states what the *overall*
+  number covers (e.g. "the complete 100-task benchmark"); leave it unset
+  if a product only ever reports one number.
+- **`resultGroups[]`** on a benchmark (`{ id, heading, scopeNote,
+  measuredAttributes }`) renders as several separately headed comparison
+  tables instead of one flat table — use this whenever a benchmark
+  compares results that have different scopes (an overall benchmark and
+  a task subset, for example), so each table's heading and `scopeNote`
+  state its own scope directly above its numbers. A benchmark that only
+  ever compares one consistently-scoped set of measurements can keep
+  using the original flat `measuredAttributes` list and skip
+  `resultGroups` entirely.
+
+`/data/products.json` and `/data/benchmarks.json` mirror this: every
+resolved metric value carries its own `numerator`, `denominator`, and
+`scope` fields (not just a bare rate number), and a benchmark's JSON
+includes a `resultGroups` array alongside the flat `measuredAttributes`/
+`measuredValues` whenever the benchmark defines scoped groups.
+
 ## Local development
 
 ```

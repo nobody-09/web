@@ -22,6 +22,28 @@ const attributeSchema = z.object({
   description: z.string().optional(),
 });
 
+/**
+ * A predefined task subset a product was also scored against, in addition
+ * to its overall/complete task-set result.
+ *
+ * This exists because a completion rate is meaningless without knowing
+ * *what it was measured over*. A subset's rate is never allowed to be
+ * confused with the product's overall rate: each subset carries its own
+ * `scope` description, and rendering code (see src/utils/attributes.ts)
+ * only ever resolves a subset value under an explicit `taskSubset:<id>` /
+ * `taskSubsetRate:<id>` key, never under the plain `taskCompletion` /
+ * `taskCompletionRate` keys used for the overall result.
+ */
+const taskSubsetSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  completed: z.number(),
+  total: z.number(),
+  // Human-readable statement of exactly what this subset covers, e.g.
+  // "预定义的 20 项多步骤内容处理任务子集(属于完整 100 项任务基准的一部分)".
+  scope: z.string(),
+});
+
 const productsCollection = defineCollection({
   type: 'content',
   schema: () =>
@@ -47,6 +69,17 @@ const productsCollection = defineCollection({
       lastReviewed: z.date(),
       notes: z.string().optional(),
 
+      // Explicit statement of what `standardTasksCompleted`/`standardTasksTotal`
+      // covers, for products/benchmarks that need to distinguish an overall
+      // result from a task-subset result (e.g. "完整的 100 项预定义任务基准").
+      // Optional and unused by products that only ever report one number.
+      standardTasksScope: z.string().optional(),
+
+      // Predefined task subsets this product was also scored against. Empty
+      // by default, so products that don't report subset results (e.g. the
+      // first benchmark group) are entirely unaffected.
+      taskSubsets: z.array(taskSubsetSchema).default([]),
+
       // Open-ended extension point for future metrics.
       attributes: z.array(attributeSchema).default([]),
 
@@ -71,6 +104,23 @@ const measuredAttributeSchema = z.object({
   description: z.string().optional(),
 });
 
+/**
+ * A single named, scoped comparison table within a benchmark page — e.g.
+ * "primary benchmark: complete 100-task set" vs "secondary analysis:
+ * 20-task subset". Optional: most benchmarks only ever need one flat list
+ * of `measuredAttributes` (the original design), so this only needs to be
+ * set when a benchmark explicitly needs to keep two or more differently
+ * scoped result sets from ever being rendered in the same table.
+ */
+const resultGroupSchema = z.object({
+  id: z.string(),
+  heading: z.string(),
+  // Statement of what this specific group of rows measures, shown directly
+  // above its table so readers can't mistake its scope for another group's.
+  scopeNote: z.string().optional(),
+  measuredAttributes: z.array(measuredAttributeSchema),
+});
+
 const benchmarksCollection = defineCollection({
   type: 'content',
   schema: () =>
@@ -85,7 +135,18 @@ const benchmarksCollection = defineCollection({
       benchmarkVersion: z.string(),
       summary: z.string(),
       methodologyNote: z.string().optional(),
+
+      // Flat comparison table — used when a benchmark only compares one
+      // consistently-scoped set of measurements (the original design, and
+      // still the default for most benchmarks).
       measuredAttributes: z.array(measuredAttributeSchema).default([]),
+
+      // Multiple explicitly-scoped comparison tables — used when a
+      // benchmark must keep two or more differently-scoped result sets
+      // (e.g. an overall result and a task subset) visually and
+      // structurally separate so one is never mistaken for the other.
+      // When present, pages render these instead of the flat table above.
+      resultGroups: z.array(resultGroupSchema).optional(),
     }),
 });
 

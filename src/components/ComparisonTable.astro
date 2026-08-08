@@ -2,14 +2,22 @@
 import type { CollectionEntry } from 'astro:content';
 import { resolveAttributeValue, NOT_RECORDED } from '../utils/attributes';
 
+type MeasuredAttribute = CollectionEntry<'benchmarks'>['data']['measuredAttributes'][number];
+
 interface Props {
   benchmark: CollectionEntry<'benchmarks'>;
   products: CollectionEntry<'products'>[];
+  /** Optional explicit list of rows to render — used when a benchmark
+   * page needs several separately-scoped tables (see `resultGroups` in
+   * the benchmark schema). Defaults to the benchmark's flat
+   * `measuredAttributes`, which is the original, still-default behavior. */
+  measuredAttributes?: MeasuredAttribute[];
 }
 
-const { benchmark, products } = Astro.props;
+const { benchmark, products, measuredAttributes } = Astro.props;
+const attributesToRender = measuredAttributes ?? benchmark.data.measuredAttributes;
 
-const rows = benchmark.data.measuredAttributes.map((measure) => ({
+const rows = attributesToRender.map((measure) => ({
   ...measure,
   cells: products.map((p) => {
     const resolved = resolveAttributeValue(p, measure.key);
