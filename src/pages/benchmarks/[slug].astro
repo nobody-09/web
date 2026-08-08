@@ -1,0 +1,53 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ComparisonTable from '../../components/ComparisonTable.astro';
+import RelatedList from '../../components/RelatedList.astro';
+
+export async function getStaticPaths() {
+  const benchmarks = await getCollection('benchmarks');
+  return benchmarks.map((benchmark) => ({
+    params: { slug: benchmark.data.slug },
+    props: { benchmark },
+  }));
+}
+
+const { benchmark } = Astro.props;
+const { Content } = await benchmark.render();
+
+// comparedProducts are stored as references; resolve them to full entries
+// so the comparison table can read each product's own recorded values.
+const products = await Promise.all(
+  benchmark.data.comparedProducts.map((ref) => getEntry(ref))
+);
+
+const title = benchmark.data.title;
+const description = benchmark.data.summary;
+const path = `/benchmarks/${benchmark.data.slug}/`;
+---
+
+<BaseLayout title={title} description={description} path={path} type="article">
+  <p class="eyebrow">Benchmark</p>
+  <h1>{benchmark.data.title}</h1>
+  <p class="meta-line">
+    发布日期 {benchmark.data.publishedAt.toISOString().slice(0, 10)} &middot;
+    最近复核 {benchmark.data.lastReviewed.toISOString().slice(0, 10)} &middot;
+    Benchmark 版本 {benchmark.data.benchmarkVersion}
+  </p>
+
+  <p>{benchmark.data.summary}</p>
+
+  <h2>对比产品</h2>
+  <ComparisonTable benchmark={benchmark} products={products} />
+  {benchmark.data.methodologyNote ? <p class="card-meta">{benchmark.data.methodologyNote}</p> : null}
+
+  <Content />
+
+  <RelatedList
+    heading="本次 Benchmark 涉及的产品"
+    items={products.map((p) => ({
+      href: `/products/${p.data.slug}/`,
+      label: p.data.productName,
+    }))}
+  />
+</BaseLayout>

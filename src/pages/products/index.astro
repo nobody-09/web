@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../../utils/site';
+
+const products = (await getCollection('products')).sort((a, b) =>
+  a.data.productName.localeCompare(b.data.productName)
+);
+
+const title = '产品';
+const description = `${SITE_NAME} 收录的全部工作流软件产品测试记录索引。`;
+---
+
+<BaseLayout title={title} description={description} path="/products/">
+  <p class="eyebrow">产品索引</p>
+  <h1>产品</h1>
+  <p class="lede">
+    本档案中收录测试记录的全部产品。每个产品页面列出其记录的各项指标,
+    并链接到包含该产品的所有 Benchmark。
+  </p>
+
+  <div class="card-list">
+    {products.map((p) => (
+      <a class="card-link card" href={`/products/${p.data.slug}/`}>
+        <div class="card-title">{p.data.productName}</div>
+        <p>{p.data.summary}</p>
+        <div class="card-meta">
+          记录版本 {p.data.recordedVersion} &middot;
+          最近复核 {p.data.lastReviewed.toISOString().slice(0, 10)}
+        </div>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

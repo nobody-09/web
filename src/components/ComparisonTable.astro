@@ -1,0 +1,41 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { resolveAttributeValue, NOT_RECORDED } from '../utils/attributes';
+
+interface Props {
+  benchmark: CollectionEntry<'benchmarks'>;
+  products: CollectionEntry<'products'>[];
+}
+
+const { benchmark, products } = Astro.props;
+
+const rows = benchmark.data.measuredAttributes.map((measure) => ({
+  ...measure,
+  cells: products.map((p) => {
+    const resolved = resolveAttributeValue(p, measure.key);
+    if (!resolved) return NOT_RECORDED;
+    const unit = resolved.unit ?? measure.unit;
+    return unit ? `${resolved.value} ${unit}` : resolved.value;
+  }),
+}));
+---
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">指标</th>
+      {products.map((p) => <th scope="col">{p.data.productName}</th>)}
+    </tr>
+  </thead>
+  <tbody>
+    {rows.map((row) => (
+      <tr>
+        <th scope="row">
+          {row.label}
+          {row.description ? <div class="card-meta">{row.description}</div> : null}
+        </th>
+        {row.cells.map((cell) => <td>{cell}</td>)}
+      </tr>
+    ))}
+  </tbody>
+</table>

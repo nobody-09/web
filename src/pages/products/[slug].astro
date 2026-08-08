@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AttributeTable from '../../components/AttributeTable.astro';
+import RelatedList from '../../components/RelatedList.astro';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((product) => ({
+    params: { slug: product.data.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const { Content } = await product.render();
+
+// A product's related benchmarks are derived, not hand-maintained: any
+// benchmark whose comparedProducts references this product's slug shows
+// up here automatically the moment that benchmark file is added.
+const allBenchmarks = await getCollection('benchmarks');
+const relatedBenchmarks = allBenchmarks.filter((b) =>
+  b.data.comparedProducts.some((ref) => ref.id === product.id)
+);
+
+const title = product.data.productName;
+const description = product.data.summary;
+const path = `/products/${product.data.slug}/`;
+---
+
+<BaseLayout title={title} description={description} path={path} type="article">
+  <p class="eyebrow">产品记录</p>
+  <h1>{product.data.productName}</h1>
+  <p class="meta-line">
+    记录版本 {product.data.recordedVersion} &middot;
+    Benchmark 版本 {product.data.benchmarkVersion} &middot;
+    测试日期 {product.data.testedAt.toISOString().slice(0, 10)}
+  </p>
+
+  <AttributeTable product={product} />
+
+  <Content />
+
+  <RelatedList
+    heading="相关 Benchmark"
+    items={relatedBenchmarks.map((b) => ({
+      href: `/benchmarks/${b.data.slug}/`,
+      label: b.data.title,
+    }))}
+    emptyText="该产品尚未出现在已发布的 Benchmark 中。"
+  />
+</BaseLayout>

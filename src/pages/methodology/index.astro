@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../../utils/site';
+
+const title = '测试方法';
+const description = `${SITE_NAME} 中所有产品与 Benchmark 共用的标准测试流程说明。`;
+---
+
+<BaseLayout title={title} description={description} path="/methodology/">
+  <p class="eyebrow">参考资料</p>
+  <h1>测试方法</h1>
+  <p class="lede">
+    本页说明本档案中每一条产品记录和每一次 Benchmark 比较所使用的标准流程。
+    各 Benchmark 详情页会链接回本页,而不会重复描述这套流程。
+  </p>
+
+  <h2>适用范围</h2>
+  <p>
+    每个产品都会在一套固定、带版本号的标准任务集上进行测试。"Benchmark 版本"
+    (例如 <code>WB-2026-08-01</code>)标识了具体使用的任务集和记录流程,
+    这样任务集的后续修订就不会悄悄改变旧记录的含义。
+  </p>
+
+  <h2>记录指标</h2>
+  <p>
+    具体记录哪些指标取决于该类软件本身的特点,但通常包括:
+  </p>
+  <ul>
+    <li><strong>平均启动时间</strong> —— 从启动到进入可交互工作界面所需的时间,取多次启动的平均值。</li>
+    <li><strong>标准任务完成情况</strong> —— 在固定的标准任务集中,成功完成的任务数量与总任务数量的比例。</li>
+    <li><strong>第三方插件支持</strong> —— 被记录版本是否支持安装第三方插件或扩展。</li>
+    <li><strong>典型使用场景</strong> —— 该产品所定位的工作流类型,作为背景信息呈现,不作为打分指标。</li>
+  </ul>
+  <p>
+    其他指标(例如 API 支持、离线模式、导出能力、自动化成功率等)会按需添加到
+    具体产品记录中,并显示在该产品的记录指标表格里。为档案新增指标不需要修改
+    本页说明,也不会影响任何已有页面。
+  </p>
+
+  <h2>记录与复核</h2>
+  <p>
+    每条产品记录都包含测试日期(<code>testedAt</code>)和最近一次复核准确性的
+    日期(<code>lastReviewed</code>)。一条记录对应一个具体的软件版本;后续版本
+    会作为新的独立记录添加,而不会修改已有记录,以保证历史比较结果保持稳定。
+  </p>
+
+  <h2>比较方式</h2>
+  <p>
+    一个 Benchmark 页面会在一组共同指标上比较两个或更多产品。比较表中显示的
+    数值在构建时直接从各产品自身的记录中读取,不会在 Benchmark 页面上单独录入。
+    这意味着某个产品数据的修正会自动反映到所有引用了该产品的 Benchmark 中。
+  </p>
+
+  <h2>机器可读数据</h2>
+  <p>
+    渲染这些页面所使用的底层数据,同样以 JSON 格式发布在
+    <a href="/data/products.json">/data/products.json</a> 和
+    <a href="/data/benchmarks.json">/data/benchmarks.json</a>,
+    以便独立于页面 HTML 对档案内容进行核对。
+  </p>
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+import { SITE_NAME } from '../utils/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <span>&copy; {year} {SITE_NAME}</span>
+    <span>
+      <a href="/methodology/">测试方法</a> &middot;
+      <a href="/about/">关于</a> &middot;
+      <a href="/data/products.json">产品数据</a> &middot;
+      <a href="/data/benchmarks.json">Benchmark 数据</a>
+    </span>
+  </div>
+</footer>

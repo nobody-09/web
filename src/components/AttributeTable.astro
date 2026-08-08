@@ -1,0 +1,60 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { resolveAttributeValue, CORE_ATTRIBUTE_ROWS } from '../utils/attributes';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+
+const { product } = Astro.props;
+const d = product.data;
+
+type Row = { label: string; value: string; unit?: string };
+
+const rows: Row[] = [];
+
+for (const { key, label } of CORE_ATTRIBUTE_ROWS) {
+  const resolved = resolveAttributeValue(product, key);
+  if (resolved) {
+    rows.push({ label, value: resolved.value, unit: resolved.unit });
+  }
+}
+
+// Open-ended metrics added for later benchmark categories.
+for (const attr of d.attributes) {
+  rows.push({ label: attr.name, value: attr.value, unit: attr.unit });
+}
+---
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">指标</th>
+      <th scope="col">记录值</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rows.map((row) => (
+      <tr>
+        <th scope="row">{row.label}</th>
+        <td>{row.value}{row.unit ? ` ${row.unit}` : ''}</td>
+      </tr>
+    ))}
+    <tr>
+      <th scope="row">记录版本</th>
+      <td>{d.recordedVersion}</td>
+    </tr>
+    <tr>
+      <th scope="row">Benchmark 版本</th>
+      <td>{d.benchmarkVersion}</td>
+    </tr>
+    <tr>
+      <th scope="row">测试日期</th>
+      <td>{d.testedAt.toISOString().slice(0, 10)}</td>
+    </tr>
+    <tr>
+      <th scope="row">最近复核日期</th>
+      <td>{d.lastReviewed.toISOString().slice(0, 10)}</td>
+    </tr>
+  </tbody>
+</table>

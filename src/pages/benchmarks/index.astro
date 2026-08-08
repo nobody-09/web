@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../../utils/site';
+
+const benchmarks = (await getCollection('benchmarks')).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
+
+const title = 'Benchmark';
+const description = `${SITE_NAME} 已发布的全部 Benchmark 比较测试索引。`;
+---
+
+<BaseLayout title={title} description={description} path="/benchmarks/">
+  <p class="eyebrow">Benchmark 索引</p>
+  <h1>Benchmark</h1>
+  <p class="lede">
+    本档案中已发布的全部比较测试,按发布时间从新到旧排列。每个 Benchmark
+    都遵循同一份<a href="/methodology/">测试方法</a>,并链接到其对比的各产品记录。
+  </p>
+
+  <div class="card-list">
+    {benchmarks.map((b) => (
+      <a class="card-link card" href={`/benchmarks/${b.data.slug}/`}>
+        <div class="card-title">{b.data.title}</div>
+        <p>{b.data.summary}</p>
+        <div class="card-meta">
+          发布日期 {b.data.publishedAt.toISOString().slice(0, 10)} &middot;
+          Benchmark 版本 {b.data.benchmarkVersion}
+        </div>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

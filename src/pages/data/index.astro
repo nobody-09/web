@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE_NAME } from '../../utils/site';
+
+const title = '机器可读数据';
+const description = `${SITE_NAME} 中每个产品与 Benchmark 记录的结构化 JSON 数据。`;
+---
+
+<BaseLayout title={title} description={description} path="/data/">
+  <p class="eyebrow">结构化数据</p>
+  <h1>机器可读数据</h1>
+  <p class="lede">
+    以下文件与网站其余部分使用的是同一份底层记录生成,因此内容始终与页面
+    展示的一致。
+  </p>
+  <ul>
+    <li><a href="/data/products.json">/data/products.json</a> —— 全部产品记录。</li>
+    <li><a href="/data/benchmarks.json">/data/benchmarks.json</a> —— 全部 Benchmark 记录,包含已解析的对比数值。</li>
+  </ul>
+</BaseLayout>
