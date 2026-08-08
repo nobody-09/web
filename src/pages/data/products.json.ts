@@ -9,7 +9,7 @@ export const GET: APIRoute = async () => {
 
   const payload = products.map((p) => ({
     id: p.data.id,
-    slug: p.data.slug,
+    slug: p.slug,
     productName: p.data.productName,
     benchmarkVersion: p.data.benchmarkVersion,
     recordedVersion: p.data.recordedVersion,
@@ -23,7 +23,7 @@ export const GET: APIRoute = async () => {
     notes: p.data.notes ?? null,
     attributes: p.data.attributes,
     summary: p.data.summary,
-    url: `/products/${p.data.slug}/`,
+    url: `/products/${p.slug}/`,
   }));
 
   return new Response(JSON.stringify(payload, null, 2), {

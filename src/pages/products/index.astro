@@ -21,7 +21,7 @@ const description = `${SITE_NAME} 收录的全部工作流软件产品测试记�
 
   <div class="card-list">
     {products.map((p) => (
-      <a class="card-link card" href={`/products/${p.data.slug}/`}>
+      <a class="card-link card" href={`/products/${p.slug}/`}>
         <div class="card-title">{p.data.productName}</div>
         <p>{p.data.summary}</p>
         <div class="card-meta">

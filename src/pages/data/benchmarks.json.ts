@@ -22,7 +22,7 @@ export const GET: APIRoute = async () => {
         values: products.map((p) => {
           const resolved = resolveAttributeValue(p, m.key);
           return {
-            productSlug: p.data.slug,
+            productSlug: p.slug,
             value: resolved?.value ?? null,
             unit: resolved?.unit ?? m.unit ?? null,
           };
@@ -31,16 +31,16 @@ export const GET: APIRoute = async () => {
 
       return {
         id: b.data.id,
-        slug: b.data.slug,
+        slug: b.slug,
         title: b.data.title,
-        comparedProducts: products.map((p) => p.data.slug),
+        comparedProducts: products.map((p) => p.slug),
         publishedAt: b.data.publishedAt.toISOString().slice(0, 10),
         lastReviewed: b.data.lastReviewed.toISOString().slice(0, 10),
         benchmarkVersion: b.data.benchmarkVersion,
         summary: b.data.summary,
         measuredAttributes: b.data.measuredAttributes,
         measuredValues,
-        url: `/benchmarks/${b.data.slug}/`,
+        url: `/benchmarks/${b.slug}/`,
       };
     })
   );

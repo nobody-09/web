@@ -27,7 +27,10 @@ const productsCollection = defineCollection({
   schema: () =>
     z.object({
       id: z.string(),
-      slug: z.string(),
+      // NOTE: `slug` is intentionally NOT part of this schema — Astro
+      // reserves that key on content-type collections for routing and
+      // generates it from the frontmatter `slug:` field automatically.
+      // Read it from `entry.slug`, not `entry.data.slug`.
       productName: z.string(),
       benchmarkVersion: z.string(),
       recordedVersion: z.string(),
@@ -73,7 +76,8 @@ const benchmarksCollection = defineCollection({
   schema: () =>
     z.object({
       id: z.string(),
-      slug: z.string(),
+      // Same note as the products schema: `slug` is reserved by Astro
+      // and comes from `entry.slug`, not `entry.data.slug`.
       title: z.string(),
       comparedProducts: z.array(reference('products')),
       publishedAt: z.date(),

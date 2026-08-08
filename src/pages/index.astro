@@ -30,7 +30,7 @@ const latestBenchmarks = benchmarks.slice(0, 3);
     </div>
     <div class="card-list">
       {latestBenchmarks.map((b) => (
-        <a class="card-link card" href={`/benchmarks/${b.data.slug}/`}>
+        <a class="card-link card" href={`/benchmarks/${b.slug}/`}>
           <div class="card-title">{b.data.title}</div>
           <p>{b.data.summary}</p>
           <div class="card-meta">

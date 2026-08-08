@@ -7,7 +7,7 @@ import RelatedList from '../../components/RelatedList.astro';
 export async function getStaticPaths() {
   const products = await getCollection('products');
   return products.map((product) => ({
-    params: { slug: product.data.slug },
+    params: { slug: product.slug },
     props: { product },
   }));
 }
@@ -25,7 +25,7 @@ const relatedBenchmarks = allBenchmarks.filter((b) =>
 
 const title = product.data.productName;
 const description = product.data.summary;
-const path = `/products/${product.data.slug}/`;
+const path = `/products/${product.slug}/`;
 ---
 
 <BaseLayout title={title} description={description} path={path} type="article">
@@ -44,7 +44,7 @@ const path = `/products/${product.data.slug}/`;
   <RelatedList
     heading="相关 Benchmark"
     items={relatedBenchmarks.map((b) => ({
-      href: `/benchmarks/${b.data.slug}/`,
+      href: `/benchmarks/${b.slug}/`,
       label: b.data.title,
     }))}
     emptyText="该产品尚未出现在已发布的 Benchmark 中。"

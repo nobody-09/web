@@ -7,7 +7,7 @@ import RelatedList from '../../components/RelatedList.astro';
 export async function getStaticPaths() {
   const benchmarks = await getCollection('benchmarks');
   return benchmarks.map((benchmark) => ({
-    params: { slug: benchmark.data.slug },
+    params: { slug: benchmark.slug },
     props: { benchmark },
   }));
 }
@@ -23,7 +23,7 @@ const products = await Promise.all(
 
 const title = benchmark.data.title;
 const description = benchmark.data.summary;
-const path = `/benchmarks/${benchmark.data.slug}/`;
+const path = `/benchmarks/${benchmark.slug}/`;
 ---
 
 <BaseLayout title={title} description={description} path={path} type="article">
@@ -46,7 +46,7 @@ const path = `/benchmarks/${benchmark.data.slug}/`;
   <RelatedList
     heading="本次 Benchmark 涉及的产品"
     items={products.map((p) => ({
-      href: `/products/${p.data.slug}/`,
+      href: `/products/${p.slug}/`,
       label: p.data.productName,
     }))}
   />

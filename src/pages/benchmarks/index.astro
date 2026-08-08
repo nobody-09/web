@@ -21,7 +21,7 @@ const description = `${SITE_NAME} 已发布的全部 Benchmark 比较测试索�
 
   <div class="card-list">
     {benchmarks.map((b) => (
-      <a class="card-link card" href={`/benchmarks/${b.data.slug}/`}>
+      <a class="card-link card" href={`/benchmarks/${b.slug}/`}>
         <div class="card-title">{b.data.title}</div>
         <p>{b.data.summary}</p>
         <div class="card-meta">
