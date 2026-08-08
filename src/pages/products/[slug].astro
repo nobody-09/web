@@ -21,7 +21,7 @@ const { Content } = await product.render();
 // up here automatically the moment that benchmark file is added.
 const allBenchmarks = await getCollection('benchmarks');
 const relatedBenchmarks = allBenchmarks.filter((b) =>
-  b.data.comparedProducts.some((ref) => ref.id === product.id)
+  b.data.comparedProducts.some((ref) => ref.id === product.slug)
 );
 
 const title = product.data.productName;
