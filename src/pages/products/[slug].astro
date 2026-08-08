@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AttributeTable from '../../components/AttributeTable.astro';
 import RelatedList from '../../components/RelatedList.astro';
@@ -17,12 +17,27 @@ const { product } = Astro.props;
 const { Content } = await product.render();
 
 // A product's related benchmarks are derived, not hand-maintained: any
-// benchmark whose comparedProducts references this product's slug shows
-// up here automatically the moment that benchmark file is added.
+// benchmark whose comparedProducts references this product shows up here
+// automatically the moment that benchmark file is added.
+//
+// NOTE: `comparedProducts` entries are *unresolved* references (whatever
+// raw id Astro assigned internally to each product entry, which is not
+// guaranteed to be the same string as the human-readable `slug` written
+// in frontmatter). Comparing `ref.id` directly against `product.slug` or
+// `product.id` is fragile and silently matched nothing in practice.
+// Resolving each reference with `getEntry()` — the same mechanism the
+// benchmark detail page already uses for its comparison table — and then
+// comparing the *resolved* entry's `.slug` is the reliable way to do this.
 const allBenchmarks = await getCollection('benchmarks');
-const relatedBenchmarks = allBenchmarks.filter((b) =>
-  b.data.comparedProducts.some((ref) => ref.id === product.slug)
-);
+const relatedBenchmarks = [];
+for (const b of allBenchmarks) {
+  const comparedEntries = await Promise.all(
+    b.data.comparedProducts.map((ref) => getEntry(ref))
+  );
+  if (comparedEntries.some((entry) => entry?.slug === product.slug)) {
+    relatedBenchmarks.push(b);
+  }
+}
 
 const title = product.data.productName;
 const description = product.data.summary;
