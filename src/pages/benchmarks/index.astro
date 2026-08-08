@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE_NAME } from '../../utils/site';
+import { SITE_NAME, withBase } from '../../utils/site';
 
 const benchmarks = (await getCollection('benchmarks')).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
@@ -16,12 +16,12 @@ const description = `${SITE_NAME} 已发布的全部 Benchmark 比较测试索�
   <h1>Benchmark</h1>
   <p class="lede">
     本档案中已发布的全部比较测试,按发布时间从新到旧排列。每个 Benchmark
-    都遵循同一份<a href="/methodology/">测试方法</a>,并链接到其对比的各产品记录。
+    都遵循同一份<a href={withBase('/methodology/')}>测试方法</a>,并链接到其对比的各产品记录。
   </p>
 
   <div class="card-list">
     {benchmarks.map((b) => (
-      <a class="card-link card" href={`/benchmarks/${b.slug}/`}>
+      <a class="card-link card" href={withBase(`/benchmarks/${b.slug}/`)}>
         <div class="card-title">{b.data.title}</div>
         <p>{b.data.summary}</p>
         <div class="card-meta">

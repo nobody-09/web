@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE_NAME } from '../../utils/site';
+import { SITE_NAME, withBase } from '../../utils/site';
 
 const products = (await getCollection('products')).sort((a, b) =>
   a.data.productName.localeCompare(b.data.productName)
@@ -21,7 +21,7 @@ const description = `${SITE_NAME} 收录的全部工作流软件产品测试记�
 
   <div class="card-list">
     {products.map((p) => (
-      <a class="card-link card" href={`/products/${p.slug}/`}>
+      <a class="card-link card" href={withBase(`/products/${p.slug}/`)}>
         <div class="card-title">{p.data.productName}</div>
         <p>{p.data.summary}</p>
         <div class="card-meta">

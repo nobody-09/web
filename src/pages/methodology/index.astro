@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE_NAME } from '../../utils/site';
+import { SITE_NAME, withBase } from '../../utils/site';
 
 const title = '测试方法';
 const description = `${SITE_NAME} 中所有产品与 Benchmark 共用的标准测试流程说明。`;
@@ -54,8 +54,8 @@ const description = `${SITE_NAME} 中所有产品与 Benchmark 共用的标准�
   <h2>机器可读数据</h2>
   <p>
     渲染这些页面所使用的底层数据,同样以 JSON 格式发布在
-    <a href="/data/products.json">/data/products.json</a> 和
-    <a href="/data/benchmarks.json">/data/benchmarks.json</a>,
+    <a href={withBase('/data/products.json')}>/data/products.json</a> 和
+    <a href={withBase('/data/benchmarks.json')}>/data/benchmarks.json</a>,
     以便独立于页面 HTML 对档案内容进行核对。
   </p>
 </BaseLayout>

@@ -3,6 +3,7 @@ import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ComparisonTable from '../../components/ComparisonTable.astro';
 import RelatedList from '../../components/RelatedList.astro';
+import { withBase } from '../../utils/site';
 
 export async function getStaticPaths() {
   const benchmarks = await getCollection('benchmarks');
@@ -46,7 +47,7 @@ const path = `/benchmarks/${benchmark.slug}/`;
   <RelatedList
     heading="本次 Benchmark 涉及的产品"
     items={products.map((p) => ({
-      href: `/products/${p.slug}/`,
+      href: withBase(`/products/${p.slug}/`),
       label: p.data.productName,
     }))}
   />

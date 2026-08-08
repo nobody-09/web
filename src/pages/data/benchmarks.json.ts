@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection, getEntry } from 'astro:content';
 import { resolveAttributeValue } from '../../utils/attributes';
+import { withBase } from '../../utils/site';
 
 // Served at /data/benchmarks.json, generated from the same `benchmarks`
 // collection the HTML pages use. `measuredValues` below is the resolved
@@ -40,7 +41,7 @@ export const GET: APIRoute = async () => {
         summary: b.data.summary,
         measuredAttributes: b.data.measuredAttributes,
         measuredValues,
-        url: `/benchmarks/${b.slug}/`,
+        url: withBase(`/benchmarks/${b.slug}/`),
       };
     })
   );

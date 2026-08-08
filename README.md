@@ -135,12 +135,36 @@ GitHub Pages on every push to `main`, using GitHub's official
 Pages for this repository under **Settings → Pages → Source: GitHub
 Actions** once the workflow file is pushed.
 
-This repository is set up as a GitHub user/organization page
-(`nobody-09.github.io`), so it's served from the domain root and
-`astro.config.mjs` sets `site` accordingly with no `base` path. If this
-project is ever moved into a normal project repository instead
-(`<user>.github.io/<repo>`), update `site` and add
-`base: '/<repo>'` in `astro.config.mjs`.
+This repository is a GitHub Pages *project* repo named `web`, so it's
+served at `https://nobody-09.github.io/web/` rather than the domain
+root. `astro.config.mjs` sets `site: 'https://nobody-09.github.io/web/'`
+and `base: '/web'` to match.
+
+Astro's `base` option affects Astro's own asset URLs, but it does
+**not** rewrite hardcoded `<a href="/...">` links in page/component
+code, and `new URL(path, SITE_URL)` also silently drops `SITE_URL`'s
+subpath when `path` starts with `/` (it's treated as an absolute-path
+reference that replaces the whole path portion of the base). To avoid
+both problems:
+
+- Every internal `<a href>` in `.astro` files goes through
+  `withBase(path)` from `src/utils/site.ts`, which just prefixes
+  `BASE_PATH` (`/web`) onto a root-absolute path.
+- Absolute URLs that need the full origin (canonical/OG tags in
+  `BaseLayout.astro`, `<loc>` entries in `sitemap.xml.ts`) are built as
+  `SITE_ORIGIN + withBase(path)`, not `new URL(path, SITE_URL)`.
+- **Markdown links inside `src/content/**/*.md` are plain text, not
+  processed by any of this.** Any link to another page from inside a
+  product/benchmark Markdown body must be written with the `/web`
+  prefix by hand (e.g. `[测试方法](/web/methodology/)`,
+  `[Orivex L17](/web/products/orivex-l17/)`). Keep this in mind when
+  adding new product/benchmark files.
+
+If this project ever moves to a GitHub user/organization page (served
+from the domain root) or a different repo name, update: `site`/`base`
+in `astro.config.mjs`, `SITE_URL`/`BASE_PATH`/`SITE_ORIGIN` in
+`src/utils/site.ts`, the `Sitemap:` line in `public/robots.txt`, and
+the hand-written `/web/...` links inside the content Markdown files.
 
 ## Version control policy
 

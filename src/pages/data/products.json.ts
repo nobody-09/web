@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { withBase } from '../../utils/site';
 
 // Served at /data/products.json. This is generated from the exact same
 // `products` content collection the HTML pages render from — there is no
@@ -23,7 +24,7 @@ export const GET: APIRoute = async () => {
     notes: p.data.notes ?? null,
     attributes: p.data.attributes,
     summary: p.data.summary,
-    url: `/products/${p.slug}/`,
+    url: withBase(`/products/${p.slug}/`),
   }));
 
   return new Response(JSON.stringify(payload, null, 2), {

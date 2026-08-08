@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION } from '../utils/site';
+import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, withBase } from '../utils/site';
 
 const benchmarks = (await getCollection('benchmarks')).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
@@ -17,20 +17,20 @@ const latestBenchmarks = benchmarks.slice(0, 3);
     <p class="lede">{SITE_TAGLINE}</p>
     <p>
       本站发布工作流软件的标准化功能测试记录,所有产品和 Benchmark 均遵循同一份
-      公开的<a href="/methodology/">测试方法</a>。可以浏览完整的
-      <a href="/products/">产品索引</a>,或完整的
-      <a href="/benchmarks/">Benchmark 索引</a>。
+      公开的<a href={withBase('/methodology/')}>测试方法</a>。可以浏览完整的
+      <a href={withBase('/products/')}>产品索引</a>,或完整的
+      <a href={withBase('/benchmarks/')}>Benchmark 索引</a>。
     </p>
   </section>
 
   <section>
     <div class="home-section-heading">
       <h2>最新 Benchmark</h2>
-      <a href="/benchmarks/">查看全部 Benchmark &rarr;</a>
+      <a href={withBase('/benchmarks/')}>查看全部 Benchmark &rarr;</a>
     </div>
     <div class="card-list">
       {latestBenchmarks.map((b) => (
-        <a class="card-link card" href={`/benchmarks/${b.slug}/`}>
+        <a class="card-link card" href={withBase(`/benchmarks/${b.slug}/`)}>
           <div class="card-title">{b.data.title}</div>
           <p>{b.data.summary}</p>
           <div class="card-meta">
@@ -45,7 +45,7 @@ const latestBenchmarks = benchmarks.slice(0, 3);
   <section>
     <div class="home-section-heading">
       <h2>涉及产品</h2>
-      <a href="/products/">查看全部产品 &rarr;</a>
+      <a href={withBase('/products/')}>查看全部产品 &rarr;</a>
     </div>
     <p class="card-meta">目前已收录 {products.length} 个产品记录。</p>
   </section>

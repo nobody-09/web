@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AttributeTable from '../../components/AttributeTable.astro';
 import RelatedList from '../../components/RelatedList.astro';
+import { withBase } from '../../utils/site';
 
 export async function getStaticPaths() {
   const products = await getCollection('products');
@@ -44,7 +45,7 @@ const path = `/products/${product.slug}/`;
   <RelatedList
     heading="相关 Benchmark"
     items={relatedBenchmarks.map((b) => ({
-      href: `/benchmarks/${b.slug}/`,
+      href: withBase(`/benchmarks/${b.slug}/`),
       label: b.data.title,
     }))}
     emptyText="该产品尚未出现在已发布的 Benchmark 中。"

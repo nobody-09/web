@@ -1,18 +1,18 @@
 ---
-import { SITE_NAME, SITE_TAGLINE } from '../utils/site';
+import { SITE_NAME, SITE_TAGLINE, withBase } from '../utils/site';
 ---
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="site-header__brand" href="/">
+    <a class="site-header__brand" href={withBase('/')}>
       <strong>{SITE_NAME}</strong>
       <span>{SITE_TAGLINE}</span>
     </a>
     <nav class="site-nav" aria-label="主导航">
-      <a href="/products/">产品</a>
-      <a href="/benchmarks/">Benchmark</a>
-      <a href="/methodology/">测试方法</a>
-      <a href="/about/">关于</a>
+      <a href={withBase('/products/')}>产品</a>
+      <a href={withBase('/benchmarks/')}>Benchmark</a>
+      <a href={withBase('/methodology/')}>测试方法</a>
+      <a href={withBase('/about/')}>关于</a>
     </nav>
   </div>
 </header>

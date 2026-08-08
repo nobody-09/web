@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { SITE_URL } from '../utils/site';
+import { SITE_ORIGIN, withBase } from '../utils/site';
 
 // Hand-rolled sitemap instead of @astrojs/sitemap (see astro.config.mjs
 // for why). Static section routes are listed once here; every product
@@ -37,7 +37,7 @@ export const GET: APIRoute = async () => {
 ${urls
   .map(
     (u) => `  <url>
-    <loc>${new URL(u.loc, SITE_URL).toString()}</loc>${
+    <loc>${SITE_ORIGIN + withBase(u.loc)}</loc>${
       u.lastmod ? `\n    <lastmod>${u.lastmod}</lastmod>` : ''
     }
   </url>`

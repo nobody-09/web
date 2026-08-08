@@ -2,7 +2,7 @@
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
-import { SITE_NAME, SITE_URL } from '../utils/site';
+import { SITE_NAME, SITE_ORIGIN, withBase } from '../utils/site';
 
 interface Props {
   title: string;
@@ -12,7 +12,12 @@ interface Props {
 }
 
 const { title, description, path, type = 'website' } = Astro.props;
-const canonicalURL = new URL(path, SITE_URL).toString();
+// NOTE: deliberately not `new URL(path, SITE_URL)` — `path` is a
+// root-absolute site path (e.g. "/products/orivex-l17/"), and resolving
+// an absolute path against a base URL replaces the base's own path
+// (here, the "/web" subpath) per the URL spec. `SITE_ORIGIN + withBase()`
+// is what actually keeps the subpath in the canonical/OG URL.
+const canonicalURL = SITE_ORIGIN + withBase(path);
 const pageTitle = title === SITE_NAME ? title : `${title} | ${SITE_NAME}`;
 ---
 

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE_NAME } from '../../utils/site';
+import { SITE_NAME, withBase } from '../../utils/site';
 
 const title = '关于';
 const description = `${SITE_NAME} 是什么,以及记录如何维护。`;
@@ -12,19 +12,8 @@ const description = `${SITE_NAME} 是什么,以及记录如何维护。`;
 
   <p>
     {SITE_NAME} 是一个收录工作流软件标准化功能测试记录的档案网站。每个产品都按照
-    <a href="/methodology/">测试方法</a>页面所述的固定流程进行测试,每个 Benchmark
+    <a href={withBase('/methodology/')}>测试方法</a>页面所述的固定流程进行测试,每个 Benchmark
     则在同一基础上比较两个或更多产品。
-  </p>
-
-  <p>
-    本档案中收录的产品名称与测试数据均为预先设定的示例记录,用于展示本站的测试
-    记录体系,不代表现实中可购买或使用的软件产品。
-  </p>
-
-  <p>
-    记录的组织方式保证了关于某个产品的每一项事实只存在于一个地方。产品页面、
-    Benchmark 页面,以及 <a href="/data/">/data/</a> 下的机器可读数据文件,
-    都是从同一份底层数据生成的,因此不会出现相互不一致的情况。
   </p>
 
   <p>

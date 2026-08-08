@@ -28,10 +28,10 @@ measuredAttributes:
 
 ## 概述
 
-本次 Benchmark 使用[测试方法](/methodology/)中描述的标准任务集和记录流程,
+本次 Benchmark 使用[测试方法](/web/methodology/)中描述的标准任务集和记录流程,
 在功能完整性与可扩展性两个方面比较 Orivex L17 与 Talmera K22。比较表中的
 数值直接读取自各产品自身的记录——具体数据见
-[Orivex L17](/products/orivex-l17/) 与 [Talmera K22](/products/talmera-k22/)。
+[Orivex L17](/web/products/orivex-l17/) 与 [Talmera K22](/web/products/talmera-k22/)。
 
 ## 结果解读
 
