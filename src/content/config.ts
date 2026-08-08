@@ -65,6 +65,15 @@ const productsCollection = defineCollection({
       thirdPartyPluginSupport: z.boolean().optional(),
       typicalUse: z.string().optional(),
 
+      // Capability-verification fields (third benchmark group onward).
+      // Each is an independent, separately-typed fact about the tested
+      // version — a template count is never allowed to be read as implying
+      // custom-workflow or API capability, so these stay as three separate
+      // optional fields rather than being folded into one composite score.
+      prebuiltTemplatesCount: z.number().optional(),
+      customWorkflowSupport: z.boolean().optional(),
+      apiSupport: z.boolean().optional(),
+
       testedAt: z.date(),
       lastReviewed: z.date(),
       notes: z.string().optional(),

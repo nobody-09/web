@@ -19,6 +19,13 @@ export const GET: APIRoute = async () => {
     standardTasksTotal: p.data.standardTasksTotal ?? null,
     thirdPartyPluginSupport: p.data.thirdPartyPluginSupport ?? null,
     typicalUse: p.data.typicalUse ?? null,
+    // Independent capability facts (third benchmark group onward) — kept
+    // as three separate fields, never collapsed into one composite score,
+    // so template count can never be read as implying custom-workflow or
+    // API capability.
+    prebuiltTemplatesCount: p.data.prebuiltTemplatesCount ?? null,
+    customWorkflowSupport: p.data.customWorkflowSupport ?? null,
+    apiSupport: p.data.apiSupport ?? null,
     testedAt: p.data.testedAt.toISOString().slice(0, 10),
     lastReviewed: p.data.lastReviewed.toISOString().slice(0, 10),
     notes: p.data.notes ?? null,

@@ -154,6 +154,35 @@ resolved metric value carries its own `numerator`, `denominator`, and
 includes a `resultGroups` array alongside the flat `measuredAttributes`/
 `measuredValues` whenever the benchmark defines scoped groups.
 
+## Independent capability attributes
+
+Some benchmarks (starting with the third benchmark group, Selvara M18 vs
+Corvion T26) compare capabilities that must never be collapsed into a
+single composite score — e.g. a template count, whether custom workflows
+are supported, and whether an API is available are three separate facts,
+and a high template count must never be presented as if it also implied
+custom-workflow or API capability. These are three first-class, optional
+product fields, each resolved and rendered independently, following the
+same pattern as `thirdPartyPluginSupport`:
+
+- **`prebuiltTemplatesCount`** (number) — count of predefined workflow
+  templates available in the tested version.
+- **`customWorkflowSupport`** (boolean) — whether users can create
+  workflows beyond the predefined templates.
+- **`apiSupport`** (boolean) — whether the tested product exposes an API
+  intended for external system integration.
+
+Each has its own row in `CORE_ATTRIBUTE_ROWS` / `resolveAttributeValue`
+(`src/utils/attributes.ts`), so a product page shows all three directly
+in the static HTML table, and a benchmark just lists them as three
+separate `measuredAttributes` rows (one key each) rather than any single
+merged field. `/data/products.json` mirrors this with three separate
+`prebuiltTemplatesCount` / `customWorkflowSupport` / `apiSupport` keys —
+there is no "feature score" field anywhere in the data. Products that
+don't declare these fields (every product in the first two benchmark
+groups) simply get no rows/values for them; nothing about existing pages
+changes.
+
 ## Local development
 
 ```

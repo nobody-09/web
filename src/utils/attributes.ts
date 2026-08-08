@@ -123,6 +123,18 @@ export function resolveAttributeValue(
       if (!data.typicalUse) return null;
       return { value: data.typicalUse };
     }
+    case 'prebuiltTemplatesCount': {
+      if (data.prebuiltTemplatesCount === undefined) return null;
+      return { value: String(data.prebuiltTemplatesCount) };
+    }
+    case 'customWorkflowSupport': {
+      if (data.customWorkflowSupport === undefined) return null;
+      return { value: data.customWorkflowSupport ? '支持' : '不支持' };
+    }
+    case 'apiSupport': {
+      if (data.apiSupport === undefined) return null;
+      return { value: data.apiSupport ? '支持' : '不支持' };
+    }
     default: {
       // Fall through to the extensible attributes list.
       const match = data.attributes.find(
@@ -146,4 +158,11 @@ export const CORE_ATTRIBUTE_ROWS: { key: string; label: string }[] = [
   { key: 'taskCompletion', label: '标准任务完成情况' },
   { key: 'thirdPartyPluginSupport', label: '第三方插件支持' },
   { key: 'typicalUse', label: '典型使用场景' },
+  // Capability-verification rows (third benchmark group onward). Each is
+  // resolved independently — a product that doesn't declare these fields
+  // (every product in the first two benchmark groups) simply gets no row
+  // for them, so existing product pages render exactly as before.
+  { key: 'prebuiltTemplatesCount', label: '预置模板数量' },
+  { key: 'customWorkflowSupport', label: '自定义工作流支持' },
+  { key: 'apiSupport', label: 'API 支持' },
 ];
